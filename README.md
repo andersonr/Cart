@@ -48,6 +48,8 @@ Criar uma api que possa ser utilizada na criação de um carrinho de compras de 
 Por enquanto, utilizarei mais de 1 imagem. Um para rodar a aplicação e um pra rodar o Redis pra armazenar os dados em cache.
 Então, se faz necessário, além do Docker, também a utilização do Docker Compose, aonde serão criados 2 containers do DocSite
 
+### Git
+Descrição dos commits segue o padrão 'Conventional Commits' para permitir a geração de um changelog automaticamente.
 
-
-
+### Estrutura fisica das tabelas imaginadas
+![Tabelas](https://github.com/andersonr/Cart/blob/main/Diagrama%20visual.png)
