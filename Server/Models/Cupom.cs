@@ -10,6 +10,7 @@ namespace Server.Models
         [MinLength(5)]
         public string Codigo { get; set; }
         [Required]
+        [Range(0, double.MaxValue, ErrorMessage = "Não é possível um valor negativo como percentual de desconto!")]
         public decimal PercentualDesconto { get; set; }
         [Required]
         public bool IsAtivo { get; set; }        

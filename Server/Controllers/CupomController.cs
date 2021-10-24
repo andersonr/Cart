@@ -86,7 +86,7 @@ namespace Server.Controllers
         }
 
         [HttpDelete(template: "cupons/{id}")]
-        public async Task<IActionResult> PutAsync([FromServices] AppDbContext context, [FromRoute] int id)
+        public async Task<IActionResult> DeleteAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
             var cupom = await context.Cupons.FirstOrDefaultAsync(item => item.Id == id);
 

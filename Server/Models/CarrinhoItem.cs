@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Server.Models
 {
@@ -10,6 +11,7 @@ namespace Server.Models
         [Required]        
         public Carrinho Carrinho { get; set; }
         [Required]
+        [Range(0, Int64.MaxValue, ErrorMessage = "Não é possível um valor negativo como quantidade!")]
         public long Quantidade { get; set; }
         [Required]
         public decimal PrecoTotalItem { get; set; }
