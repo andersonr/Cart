@@ -90,7 +90,7 @@ namespace Server.Controllers
                 produtoBase.PrecoUnitario = item.Produto.PrecoUnitario;
                 produtoBase.Nome = item.Produto.Nome;
                 itemEstoque.Produto = produtoBase;
-                
+
                 context.Produtos.Update(produtoBase);
 
                 //itemEstoque.Produto = produtoBase;
@@ -109,11 +109,12 @@ namespace Server.Controllers
         [HttpDelete(template: "Estoques/{id}")]
         public async Task<IActionResult> DeleteAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
-            var itemEstoque = await context.Estoques.FirstOrDefaultAsync(item => item.Id == id);
-
+            //var itemEstoque = await context.Estoques.FirstOrDefaultAsync(item => item.Id == id);
+            var itemEstoque = await context.Estoques.ToArrayAsync();
             try
             {
-                context.Estoques.Remove(itemEstoque);
+                context.Estoques.RemoveRange(itemEstoque);
+                //context.Estoques.Remove(itemEstoque);
                 await context.SaveChangesAsync();
 
                 return Ok();
@@ -124,5 +125,18 @@ namespace Server.Controllers
             }
         }
 
+        [HttpPost(template: "PreencheEstoque")]
+        public async Task<IActionResult> PreencheEstoqueAsync([FromServices] AppDbContext context)
+        {
+            await context.Produtos.ForEachAsync(async produto =>
+            {
+                var item = await context.Estoques.AddAsync(new Estoque { Produto = produto, Quantidade = 10 });
+
+                await context.SaveChangesAsync();
+                // await PostAsync(context, new CreateEstoqueViewModel { Produto = produto, Quantidade = 10 });
+            });
+
+            return Ok();
+        }
     }
 }

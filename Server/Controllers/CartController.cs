@@ -29,8 +29,12 @@ namespace Server.Controllers
             if (valorCookie == null && !service.TrafficLock.TryGetValue(HttpContext.Session.Id, out valorCookie))
                 return NotFound("Carrinho não encontrado!");
 
-            var carrinho = await context.Carrinhos.FirstOrDefaultAsync(nn => nn.Token == valorCookie);
-            
+            //var carrinho = await context.Carrinhos.FirstOrDefaultAsync(nn => nn.Token == valorCookie);
+
+            //return Ok(carrinho);
+
+            var carrinho = await context.Carrinhos.ToListAsync();
+
             return Ok(carrinho);
         }
 
