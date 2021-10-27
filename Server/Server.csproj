@@ -14,4 +14,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqLite" Version="5.0.11" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="BLL\" />
+  </ItemGroup>
+
 </Project>

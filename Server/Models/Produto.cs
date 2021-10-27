@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Models
 {
-    
+
     public class Produto
     {
         public int Id { get; set; }
@@ -14,6 +15,8 @@ namespace Server.Models
         public decimal PrecoUnitario { get; set; }
         [Required]
         public string Nome { get; set; }
+
+        public ICollection<CarrinhoItem> CarrinhoItems { get; set; }
 
         //public override bool Equals(object obj)
         //{

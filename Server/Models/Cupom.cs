@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Server.Models
@@ -13,6 +14,8 @@ namespace Server.Models
         [Range(0, double.MaxValue, ErrorMessage = "Não é possível um valor negativo como percentual de desconto!")]
         public decimal PercentualDesconto { get; set; }
         [Required]
-        public bool IsAtivo { get; set; }        
+        public bool IsAtivo { get; set; }
+
+        public ICollection<Carrinho> Carrinhos { get; set; }
     }
 }
