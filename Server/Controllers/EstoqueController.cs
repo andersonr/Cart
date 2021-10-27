@@ -16,7 +16,7 @@ namespace Server.Controllers
         public async Task<IActionResult> GetAsync([FromServices] AppDbContext context)
         {
             //AsNoTracking é parecido com o With Nolock do SQL, não fica monitorando as alterações durante a resposta, faz a leitura e boa
-            var estoques = await context.Estoques.AsNoTracking().ToListAsync();
+            var estoques = await context.Estoques.AsNoTracking().Include(ss => ss.Produto).ToListAsync();
 
             return Ok(estoques);
         }
@@ -26,7 +26,7 @@ namespace Server.Controllers
         public async Task<IActionResult> GetByIdAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
             //AsNoTracking é parecido com o With Nolock do SQL, não fica monitorando as alterações durante a resposta, faz a leitura e boa
-            var estoque = await context.Estoques.AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
+            var estoque = await context.Estoques.AsNoTracking().Include(ss => ss.Produto).FirstOrDefaultAsync(item => item.Id == id);
 
             return estoque == null ? NotFound() : Ok(estoque);
         }
