@@ -35,9 +35,9 @@ namespace Server
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
+            else//Testar se gera algum problema Link: https://docs.microsoft.com/pt-br/aspnet/core/web-api/handle-errors?view=aspnetcore-5.0
+                app.UseExceptionHandler("/error");
 
             app.UseRouting();
             app.UseCookiePolicy();
