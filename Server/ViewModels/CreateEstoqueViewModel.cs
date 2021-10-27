@@ -8,6 +8,7 @@ namespace Server.ViewModels
 {
     public class CreateEstoqueViewModel : Notifiable<Notification>
     {
+        [Required]
         public int Quantidade { get; set; } = 0;
         [Required]
         public Produto Produto { get; set; }

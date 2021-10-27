@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Server.Models
 {
@@ -16,6 +17,7 @@ namespace Server.Models
         [Required]
         public string Nome { get; set; }
 
+        [JsonIgnore]
         public ICollection<CarrinhoItem> CarrinhoItems { get; set; }
 
         //public override bool Equals(object obj)

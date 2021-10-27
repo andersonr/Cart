@@ -4,25 +4,21 @@ using Server.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Server.ViewModels.Carrinho
+namespace Server.ViewModels.Cart
 {
-    public class CreateCarrinhoViewModel : Notifiable<Notification>
+    public class NewCartViewModel : Notifiable<Notification>
     {
         public Usuario Usuario { get; set; }
-        [Required]
-        public bool Ativo { get; set; }
-        public string Token { get; set; }
-
+        
         public Models.Carrinho MapTo()
         {
             AddNotifications(new Contract<Notification>().Requires());
 
-
             return new Models.Carrinho
             {
                 Usuario = Usuario,
-                Ativo = Ativo,
-                Token = String.IsNullOrEmpty(Token) ? Guid.NewGuid().ToString() : Token,
+                Ativo = true,
+                Token = Guid.NewGuid().ToString(),
                 PrecoTotal = 0,
                 PrecoTotalDesconto = 0,
             };

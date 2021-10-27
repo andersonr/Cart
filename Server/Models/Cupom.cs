@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Server.Models
 {
@@ -16,6 +17,7 @@ namespace Server.Models
         [Required]
         public bool IsAtivo { get; set; }
 
+        [JsonIgnore]
         public ICollection<Carrinho> Carrinhos { get; set; }
     }
 }

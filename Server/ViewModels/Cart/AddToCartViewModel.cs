@@ -2,7 +2,7 @@
 using Flunt.Validations;
 using System.ComponentModel.DataAnnotations;
 
-namespace Server.ViewModels.Carrinho
+namespace Server.ViewModels.Cart
 {
     public class AddToCartViewModel : Notifiable<Notification>
     {

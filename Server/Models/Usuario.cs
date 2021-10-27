@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Server.Models
 {
@@ -9,7 +10,9 @@ namespace Server.Models
         [Required]
         public string Nome { get; set; }
 
+        [JsonIgnore]
         public ICollection<CarrinhoUsuarioFavorito> CarrinhoUsuarioFavoritos { get; set; }
+        [JsonIgnore]
         public ICollection<Carrinho> Carrinhos{ get; set; }
 
     }

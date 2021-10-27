@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.ViewModels;
@@ -8,19 +9,28 @@ namespace Server.Controllers
 {
     [ApiController]
     [Route(template: "v1")]
-    public class UsuarioController : ControllerBase
+    public class UsersController : ControllerBase
     {
         [HttpGet]
-        [Route(template: "Usuarios")]
+        [Route(template: "Users")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAsync([FromServices] AppDbContext context)
         {
-            var usuarios = await context.Usuarios.AsNoTracking().ToListAsync();
+            try
+            {
+                var usuarios = await context.Usuarios.AsNoTracking().ToListAsync();
 
-            return Ok(usuarios);
+                return Ok(usuarios);
+            }
+            catch (System.Exception err)
+            {
+                return BadRequest(err.Message);
+            }
         }
 
         [HttpGet]
-        [Route(template: "Usuarios/{id}")]
+        [Route(template: "Users/{id}")]
         public async Task<IActionResult> GetByIdAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
             var usuario = await context.Usuarios.AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
@@ -28,7 +38,7 @@ namespace Server.Controllers
             return usuario == null ? NotFound() : Ok(usuario);
         }
 
-        [HttpPost(template: "Usuarios")]
+        [HttpPost(template: "Users")]
         public async Task<IActionResult> PostAsync([FromServices] AppDbContext context, [FromBody] CreateUsuarioViewModel model)
         {
             if (!ModelState.IsValid)
@@ -51,7 +61,7 @@ namespace Server.Controllers
             }
         }
 
-        [HttpPut(template: "Usuarios/{id}")]
+        [HttpPut(template: "Users/{id}")]
         public async Task<IActionResult> PutAsync([FromServices] AppDbContext context, [FromBody] CreateUsuarioViewModel model, [FromRoute] int id)
         {
             if (!ModelState.IsValid)
@@ -81,7 +91,7 @@ namespace Server.Controllers
             }
         }
 
-        //[HttpDelete(template: "Usuarios/{id}")]
+        //[HttpDelete(template: "Users/{id}")]
         //public async Task<IActionResult> DeleteAsync([FromServices] AppDbContext context, [FromRoute] int id)
         //{
         //    var produto = await context.Produtos.FirstOrDefaultAsync(item => item.Id == id);
