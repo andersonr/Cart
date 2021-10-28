@@ -14,19 +14,17 @@ Criar uma api que possa ser utilizada na criação de um carrinho de compras de 
 
 ### Funcionalidades
 - [x] Adicionar um item ao carrinho
-- Remover um item do carrinho
-- Atualizar quantidade de um item do carrinho
-- Limpar o carrinho
-- Adicionar cupom de desconto ao carrinho
-    - Apenas determinado item
-    - No carrinho todo
-- Gerar totais e subtotais
-    - Subtotais: Preço unitário, Preço unitário com desconto do cupom e total daquele item(*qtdade)
-    - Total do carrinho com e sem o desconto
+- [x] Remover um item do carrinho
+- [x] Atualizar quantidade de um item do carrinho
+- [x] Limpar o carrinho
+- [x] Adicionar cupom de desconto ao carrinho       
+- [x] Gerar totais e subtotais
+        - Subtotais: Preço unitário, Preço unitário com desconto do cupom e total daquele item(*qtdade)
+        - Total do carrinho com e sem o desconto - Já fica armazenado na base, mas disponibilizei um endpoint para trazer a totalização também
 - [x] Salvar carrinhos 
-    - Salvar abaixo do usuário logado, salvando vários carrinhos diferentes, permitindo que usuário logado consiga seleciona-los novamente
+    - [x] Disponibiliza um campo para atrelar o carrinho a um usuário "logado", porém, não foi feito o controle de autenticação
     - [x] Salvar o carrinho construido, sem a necessidade de login, através de controle de cookies
-- Retornar um JSON com todos os itens do carrinho
+- [x] Retornar um JSON com todos os itens do carrinho
 
 
 ### Melhorias
@@ -36,12 +34,15 @@ Criar uma api que possa ser utilizada na criação de um carrinho de compras de 
     - Pizzas é possível escolher os sabores
     - Eletronicos é possível escolher a voltagem 110V ou 220V
     
-    Seria legal permitir essa customizações direto no carrinho
+    Seria legal permitir essa customizações direto nos itens do carrinhos
+3. Desenvolver rotinas para armazenar uma lista de carrinhos "favoritos" do usuário
 
 ### TechStack
-- .net 5 - Facilitar a entrega - Se der tempo, trocar pra versão 6 e usar MiniServices
-- EntityFrameWork Core
-- SqLite
+- .net 5 
+- EntityFrameWork Core - ORM básico
+- SqLite - Fazer a persistência 
+- Flunt - Auxiliar validação dos dados recebidos na api
+- Swagger - Para documentar api
 
 ### Imagens do Docker
 Tentar entregar em apenas 1 imagem, para facilitar. 
@@ -50,11 +51,14 @@ Então, se faz necessário, além do Docker, também a utilização do Docker Co
 ### Git
 Descrição dos commits segue o padrão 'Conventional Commits' para permitir a geração de um changelog automaticamente.
 
-### Falta implementar
-    Funcionalidades requeridas
+### Falta fazer    
     Testes unitários
     Testes de performance e carga
-    Documentar API
+    Refatorar 
+        1. Idioma das váriaveis no código
+        2. Remover classes e comentários não usados
+    Melhorar essa documentação
+    Compartilhar com os perfis necessários. 
 
 ### Estrutura fisica das tabelas imaginadas
 ![Tabelas](https://github.com/andersonr/Cart/blob/main/Diagrama%20visual.png)
