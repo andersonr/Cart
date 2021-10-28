@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Models;
-using Server.ViewModels.Cart;
+using Server.ViewModels.Carrinho;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,7 +33,7 @@ namespace Server.Controllers
         }
 
         [HttpPost(template: "CartItems")]
-        public async Task<IActionResult> AddItemToCartAsync([FromServices] AppDbContext context, [FromBody] AddToCartViewModel model)
+        public async Task<IActionResult> AddItemToCartAsync([FromServices] AppDbContext context, [FromBody] NovoItemCarrinhoViewModel model)
         {
             if (!ModelState.IsValid || !model.IsValidData())
                 return BadRequest(model.Notifications);
@@ -82,7 +82,7 @@ namespace Server.Controllers
         }
 
         [HttpPut(template: "CartItems/{id}")]
-        public async Task<IActionResult> PutAsync([FromServices] AppDbContext context, [FromBody] UpdateCartItemViewModel model, [FromRoute] int id)
+        public async Task<IActionResult> PutAsync([FromServices] AppDbContext context, [FromBody] AtualizaCarrinhoItem model, [FromRoute] int id)
         {
             if (!ModelState.IsValid || !model.IsEntradasValidas())
                 return BadRequest(model.Notifications);
@@ -128,11 +128,7 @@ namespace Server.Controllers
                 context.CarrinhoItems.Remove(item);
                 if (cart.CarrinhoItems.Count > 0)
                     cart.UpdatePrices();
-                //else
-                //{
-                //Inativar - Deletar carrinho?
-                //}
-
+               
                 await context.SaveChangesAsync();
                 return Ok();
             }

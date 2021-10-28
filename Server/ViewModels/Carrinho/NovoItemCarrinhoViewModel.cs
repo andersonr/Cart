@@ -3,12 +3,12 @@ using Flunt.Validations;
 using Server.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace Server.ViewModels.Cart
+namespace Server.ViewModels.Carrinho
 {
-    public class AddToCartViewModel : Notifiable<Notification>
+    public class NovoItemCarrinhoViewModel : Notifiable<Notification>
     {
         [Required]
-        public Carrinho Carrinho { get; set; }
+        public Models.Carrinho Carrinho { get; set; }
         [Required]
         public Produto Produto { get; set; }
         [Required]

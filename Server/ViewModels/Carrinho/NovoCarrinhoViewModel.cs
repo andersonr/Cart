@@ -4,9 +4,9 @@ using Server.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Server.ViewModels.Cart
+namespace Server.ViewModels.Carrinho
 {
-    public class NewCartViewModel : Notifiable<Notification>
+    public class NovoCarrinhoViewModel : Notifiable<Notification>
     {
         public Usuario Usuario { get; set; }
         

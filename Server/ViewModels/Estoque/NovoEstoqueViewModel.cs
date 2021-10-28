@@ -6,7 +6,7 @@ using Flunt.Validations;
 
 namespace Server.ViewModels
 {
-    public class CreateEstoqueViewModel : Notifiable<Notification>
+    public class NovoEstoqueViewModel : Notifiable<Notification>
     {
         [Required]
         public int Quantidade { get; set; } = 0;

@@ -31,7 +31,7 @@ namespace Server.Controllers
         }
 
         [HttpPost(template: "Cupons")]
-        public async Task<IActionResult> PostAsync([FromServices] AppDbContext context, [FromBody] CreateCupomViewModel model)
+        public async Task<IActionResult> PostAsync([FromServices] AppDbContext context, [FromBody] NovoCupomViewModel model)
         {
             if (!ModelState.IsValid && !model.IsValidData())
                 return BadRequest(model.Notifications);
@@ -52,12 +52,12 @@ namespace Server.Controllers
             }
             catch (System.Exception e)
             {
-                return BadRequest(e.Message);//Correto não é BadRequest, ver um melhor, que mais se adequa
+                return BadRequest(e.Message);
             }
         }
 
         [HttpPut(template: "Cupons/{id}")]
-        public async Task<IActionResult> PutAsync([FromServices] AppDbContext context, [FromBody] CreateCupomViewModel model, [FromRoute] int id)
+        public async Task<IActionResult> PutAsync([FromServices] AppDbContext context, [FromBody] NovoCupomViewModel model, [FromRoute] int id)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -81,11 +81,11 @@ namespace Server.Controllers
             }
             catch (System.Exception e)
             {
-                return BadRequest(e.Message);//Correto não é BadRequest, ver um melhor, que mais se adequa
+                return BadRequest(e.Message);
             }
         }
 
-        [HttpDelete(template: "cupons/{id}")]
+        [HttpDelete(template: "Cupons/{id}")]
         public async Task<IActionResult> DeleteAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
             var cupom = await context.Cupons.FirstOrDefaultAsync(item => item.Id == id);

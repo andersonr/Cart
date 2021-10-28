@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Server.ViewModels
 {
-    public class CreateCupomViewModel : Notifiable<Notification>
+    public class NovoCupomViewModel : Notifiable<Notification>
     {
         [Required]
         public bool IsAtivo { get; set; } = true;

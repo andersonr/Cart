@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Server.ViewModels
 {
-    public class CreateUsuarioViewModel : Notifiable<Notification>
+    public class NovoUsuarioViewModel : Notifiable<Notification>
     {
         [Required]
         public string Nome { get; set; }

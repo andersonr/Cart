@@ -3,9 +3,9 @@ using Flunt.Validations;
 using Server.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace Server.ViewModels.Cart
+namespace Server.ViewModels.Carrinho
 {
-    public class UpdateCartViewModel : Notifiable<Notification>
+    public class AtualizaCarrinhoViewModel : Notifiable<Notification>
     {
         public Cupom Cupom { get; set; }
         public bool Ativo { get; set; }

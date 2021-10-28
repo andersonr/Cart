@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Server.Data;
-using Server.ViewModels.Cart;
+using Server.ViewModels.Carrinho;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -92,9 +92,8 @@ namespace Server.Controllers
             });
         }
 
-
         [HttpPost(template: "Cart")]
-        public async Task<IActionResult> CartAsync([FromServices] AppDbContext context, [FromBody] NewCartViewModel model)
+        public async Task<IActionResult> CartAsync([FromServices] AppDbContext context, [FromBody] NovoCarrinhoViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -133,7 +132,7 @@ namespace Server.Controllers
         }
 
         [HttpPut(template: "Cart/{id}")]
-        public async Task<IActionResult> PutAsync([FromServices] AppDbContext context, [FromBody] UpdateCartViewModel model, [FromRoute] int id)
+        public async Task<IActionResult> PutAsync([FromServices] AppDbContext context, [FromBody] AtualizaCarrinhoViewModel model, [FromRoute] int id)
         {
             if (!ModelState.IsValid || !model.IsValidEntryData())
                 return BadRequest(model.Notifications);

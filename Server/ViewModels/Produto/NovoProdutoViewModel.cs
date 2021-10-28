@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Server.ViewModels
 {
-    public class CreateProdutoViewModel : Notifiable<Notification>
+    public class NovoProdutoViewModel : Notifiable<Notification>
     {
         [Required]
         public bool IsDisponivel { get; set; } = false;

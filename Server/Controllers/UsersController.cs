@@ -19,9 +19,9 @@ namespace Server.Controllers
         {
             try
             {
-                var usuarios = await context.Usuarios.AsNoTracking().ToListAsync();
+                var users = await context.Usuarios.AsNoTracking().ToListAsync();
 
-                return Ok(usuarios);
+                return Ok(users);
             }
             catch (System.Exception err)
             {
@@ -33,81 +33,62 @@ namespace Server.Controllers
         [Route(template: "Users/{id}")]
         public async Task<IActionResult> GetByIdAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
-            var usuario = await context.Usuarios.AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
+            var user = await context.Usuarios.AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
 
-            return usuario == null ? NotFound() : Ok(usuario);
+            return user == null ? NotFound() : Ok(user);
         }
 
         [HttpPost(template: "Users")]
-        public async Task<IActionResult> PostAsync([FromServices] AppDbContext context, [FromBody] CreateUsuarioViewModel model)
+        public async Task<IActionResult> PostAsync([FromServices] AppDbContext context, [FromBody] NovoUsuarioViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var usuario = model.MapTo();
+            var user = model.MapTo();
             if (!model.IsValid)
                 return BadRequest(model.Notifications);
 
             try
             {
-                await context.Usuarios.AddAsync(usuario);
+                await context.Usuarios.AddAsync(user);
                 await context.SaveChangesAsync();
 
-                return Created($"v1/Usuarios/{usuario.Id}", usuario);
+                return Created($"v1/Users/{user.Id}", user);
             }
             catch (System.Exception e)
             {
-                return BadRequest(e.Message);//Correto não é BadRequest, ver um melhor, que mais se adequa
+                return BadRequest(e.Message);
             }
         }
 
         [HttpPut(template: "Users/{id}")]
-        public async Task<IActionResult> PutAsync([FromServices] AppDbContext context, [FromBody] CreateUsuarioViewModel model, [FromRoute] int id)
+        public async Task<IActionResult> PutAsync([FromServices] AppDbContext context, [FromBody] NovoUsuarioViewModel model, [FromRoute] int id)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var usuario = await context.Usuarios.FirstOrDefaultAsync(item => item.Id == id);
+            var user = await context.Usuarios.FirstOrDefaultAsync(item => item.Id == id);
 
-            if (usuario == null)
+            if (user == null)
                 return NotFound();
 
             try
             {
-                var usuarioRecebido = model.MapTo();
+                var userModel = model.MapTo();
                 if (!model.IsValid)
                     return BadRequest(model.Notifications);
 
-                usuario.Nome = usuarioRecebido.Nome;
+                user.Nome = userModel.Nome;
 
-                context.Usuarios.Update(usuario);
+                context.Usuarios.Update(user);
                 await context.SaveChangesAsync();
 
-                return Ok(usuario);
+                return Ok(user);
             }
             catch (System.Exception e)
             {
-                return BadRequest(e.Message);//Correto não é BadRequest, ver um melhor, que mais se adequa
+                return BadRequest(e.Message);
             }
         }
-
-        //[HttpDelete(template: "Users/{id}")]
-        //public async Task<IActionResult> DeleteAsync([FromServices] AppDbContext context, [FromRoute] int id)
-        //{
-        //    var produto = await context.Produtos.FirstOrDefaultAsync(item => item.Id == id);
-
-        //    try
-        //    {
-        //        context.Produtos.Remove(produto);
-        //        await context.SaveChangesAsync();
-
-        //        return Ok();
-        //    }
-        //    catch (System.Exception)
-        //    {
-        //        return BadRequest();
-        //    }
-        //}
-
     }
 }
