@@ -13,10 +13,12 @@ namespace Server.ViewModels.Cart
 
         public bool IsValidEntryData()
         {
-            AddNotifications(new Contract<Notification>().Requires().IsGreaterThan(Cupom.PercentualDesconto, 0, "O desconto não pode ser Zero porcento!"));
-            //.IsGreaterOrEqualsThan(PrecoTotal, 0, "Preço total não pode ser negativo!")
-            //.IsGreaterOrEqualsThan(PrecoTotalDesconto, 0, "Preço com desconto não pode ser negativo!")
-            //.IsLowerOrEqualsThan(PrecoTotalDesconto,PrecoTotal, "O preço com desconto não pode ser maior que o preço total!"));
+            AddNotifications(new Contract<Notification>()
+                        .Requires());
+            //.IsGreaterThan(Cupom.PercentualDesconto, 0, "O desconto não pode ser Zero porcento!"));
+
+            if (Cupom != null && Cupom.PercentualDesconto <= 0)
+                AddNotification("Percentual de desconto é zero", "O percentual de desconto do cupom não pode ser zero");
 
             return IsValid;
         }

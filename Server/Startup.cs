@@ -36,7 +36,7 @@ namespace Server
         {
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
-            else//Testar se gera algum problema Link: https://docs.microsoft.com/pt-br/aspnet/core/web-api/handle-errors?view=aspnetcore-5.0
+            else
                 app.UseExceptionHandler("/error");
 
             app.UseRouting();

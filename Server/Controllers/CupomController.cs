@@ -16,7 +16,6 @@ namespace Server.Controllers
         [Route(template: "Cupons")]
         public async Task<IActionResult> GetAsync([FromServices] AppDbContext context)
         {
-            //AsNoTracking é parecido com o With Nolock do SQL, não fica monitorando as alterações durante a resposta, faz a leitura e boa
             var cupons = await context.Cupons.AsNoTracking().ToListAsync();
 
             return Ok(cupons);
@@ -26,7 +25,6 @@ namespace Server.Controllers
         [Route(template: "Cupons/{id}")]
         public async Task<IActionResult> GetByIdAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
-            //AsNoTracking é parecido com o With Nolock do SQL, não fica monitorando as alterações durante a resposta, faz a leitura e boa
             var cupom = await context.Cupons.AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
 
             return cupom == null ? NotFound() : Ok(cupom);
@@ -35,12 +33,12 @@ namespace Server.Controllers
         [HttpPost(template: "Cupons")]
         public async Task<IActionResult> PostAsync([FromServices] AppDbContext context, [FromBody] CreateCupomViewModel model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
+            if (!ModelState.IsValid && !model.IsValidData())
+                return BadRequest(model.Notifications);
 
             var cupom = new Cupom
             {
-                IsAtivo = false,
+                IsAtivo = model.IsAtivo,
                 Codigo = model.Codigo,
                 PercentualDesconto = model.PercentualDesconto
             };
@@ -73,7 +71,9 @@ namespace Server.Controllers
             {
                 cupom.Codigo = model.Codigo;
                 cupom.PercentualDesconto = model.PercentualDesconto;
+                cupom.IsAtivo = model.IsAtivo;
 
+                context.Carrinhos.ToListAsync().Result.FindAll(cart => cart.Ativo && cart.Cupom == cupom).ForEach(cart => cart.UpdatePrices());
                 context.Cupons.Update(cupom);
                 await context.SaveChangesAsync();
 
@@ -92,6 +92,7 @@ namespace Server.Controllers
 
             try
             {
+                context.Carrinhos.ToListAsync().Result.FindAll(cart => cart.Ativo && cart.Cupom == cupom).ForEach(cart => cart.UpdatePrices());
                 context.Cupons.Remove(cupom);
                 await context.SaveChangesAsync();
 

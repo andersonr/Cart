@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Server.Models;
 using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Controllers
 {
@@ -48,10 +50,48 @@ namespace Server.Controllers
         [Route(template: "Cart/{id}")]
         public async Task<IActionResult> GetByIdAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
-            var cart = await context.Carrinhos.AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
+            var cart = await context.Carrinhos.AsNoTrackingWithIdentityResolution()
+                                                .Include(nn => nn.Cupom)
+                                                .Include(nn => nn.Usuario)
+                                                .Include(nn => nn.CarrinhoItems).ThenInclude(c => c.Produto)
+                                                .FirstOrDefaultAsync(item => item.Id == id);
+            if (cart == null)
+                return NotFound("Carrinho não encontrado!");
 
-            return cart == null ? NotFound("Carrinho não encontrado!") : Ok(cart);
+            return Ok(new { cart, Items = cart.CarrinhoItems });
         }
+
+        [HttpGet]
+        [Route(template: "CartTotals/{id}")]
+        public async Task<IActionResult> GetTotalsByIdAsync([FromServices] AppDbContext context, [FromRoute] int id)
+        {
+            var cart = await context.Carrinhos.Include(nn => nn.Cupom).Include(nn => nn.CarrinhoItems).FirstOrDefaultAsync(item => item.Id == id);
+
+            if (cart == null)
+                return NotFound("Carrinho não encontrado!");
+
+            cart.UpdatePrices();
+            try
+            {
+                context.Carrinhos.Update(cart);
+            }
+            catch (Exception er)
+            {
+                return BadRequest(er.Message);
+            }
+
+            var items = context.CarrinhoItems.Include(nn => nn.Produto).AsNoTracking().Where(item => item.Carrinho.Id == cart.Id);
+            var descountToCalculateSubItem = cart.Cupom != null ? cart.Cupom.PercentualDesconto : 0;
+
+            return Ok(new
+            {
+                Id = cart.Id,
+                PrecoTotal = cart.PrecoTotal,
+                PrecoTotalDesconto = cart.PrecoTotalDesconto,
+                Items = GenerateSubTotalData(items, descountToCalculateSubItem)
+            });
+        }
+
 
         [HttpPost(template: "Cart")]
         public async Task<IActionResult> CartAsync([FromServices] AppDbContext context, [FromBody] NewCartViewModel model)
@@ -70,8 +110,7 @@ namespace Server.Controllers
             if (HttpContext.Request.Cookies[CookieTokenCart] != null)
             {
                 deactivatingOldCarts = DeactiveCartsByCookieToken(context, HttpContext.Request.Cookies[CookieTokenCart].ToString());
-                //Será que devo remover do Response e adicionar de novo? Como atualizar?
-                HttpContext.Response.Cookies.Delete(CookieTokenCart);
+                HttpContext.Response.Cookies.Delete(CookieTokenCart);//Será que devo remover do Response e adicionar de novo? Como atualizar?
                 CreateCookieCart(newCart.Token);
             }
             else
@@ -93,127 +132,67 @@ namespace Server.Controllers
             }
         }
 
-        [HttpPost(template: "AddToCart")]
-        public async Task<IActionResult> GetCartAsync([FromServices] AppDbContext context, [FromBody] AddToCartViewModel model)
-        {
-            //if (!ModelState.IsValid)
-            //    return BadRequest();
-
-            //if (!model.IsEntradasValidas())
-            //    return BadRequest(model.Notifications);
-
-            //var cart = await GetCartAsync(context);
-
-            //if (cart == null)
-            //{
-            //    model.AddNotification("Carrinho não encontrado!", "Carrinho não encontrado!");
-            //    return NotFound(model.Notifications);
-            //}
-
-            //var produto = await context.Produtos.FindAsync(model.ProdutoID);
-            //if (produto == null)
-            //{
-            //    model.AddNotification("Produto não encontrado!", "Produto não encontrado!");
-            //    return BadRequest(model.Notifications);
-            //}
-
-            //if (!produto.IsDisponivel)
-            //{
-            //    model.AddNotification("Produto não está mais disponível!", "Produto não está mais disponível!");
-            //    return BadRequest(model.Notifications);
-            //}
-
-            //var estoqueProduto = await context.Estoques.FirstOrDefaultAsync(nn => nn.Produto == produto);
-            //if (estoqueProduto == null || estoqueProduto.Quantidade <= 0)
-            //{
-            //    model.AddNotification("Produto sem estoque!", "Produto sem estoque!");
-
-            //    return BadRequest(model.Notifications);
-            //}
-
-            //var item = new CarrinhoItem
-            //{
-            //    Carrinho = cart,
-            //    Produto = produto,
-            //    Quantidade = model.Qtdade,
-            //    PrecoTotalItem = (model.Qtdade * produto.PrecoUnitario)
-            //};
-
-            //try
-            //{
-            //    await context.CarrinhoItems.AddAsync(item);
-
-            //    var totalAtual = cart.CarrinhoItems.Sum(item => item.PrecoTotalItem);
-            //    cart.PrecoTotal = totalAtual;
-
-            //    await context.SaveChangesAsync();
-
-            //    return Created($"v1/Carts/{cart.Id}", cart);
-            //}
-            //catch (System.Exception e)
-            //{
-            //    return BadRequest(e.Message);//Correto não é BadRequest, ver um melhor, que mais se adequa
-            //}
-            return BadRequest();
-        }
-
         [HttpPut(template: "Cart/{id}")]
         public async Task<IActionResult> PutAsync([FromServices] AppDbContext context, [FromBody] UpdateCartViewModel model, [FromRoute] int id)
         {
             if (!ModelState.IsValid || !model.IsValidEntryData())
                 return BadRequest(model.Notifications);
 
-            var cart = await context.Carrinhos.FindAsync(id);
+            var cart = await context.Carrinhos.Include(nn => nn.CarrinhoItems).FirstOrDefaultAsync(item => item.Id == id);
+
             if (cart == null)
                 return NotFound("Carrinho não encontrado!");
 
-            if (model.Cupom != null)
-            {
-                var total = await context.CarrinhoItems.Where(item => item.Carrinho == cart).SumAsync(nn => nn.PrecoTotalItem);
-                cart.PrecoTotal = total;
-                cart.PrecoTotalDesconto = total > 0 ? (total - ((total * model.Cupom.PercentualDesconto) / 100)) : total;
-            }
+            cart.Cupom = model.Cupom;
+            cart.UpdatePrices();
 
             cart.Usuario = model.Usuario;
             cart.Ativo = model.Ativo;
 
-            return Ok();
+            try
+            {
+                await context.SaveChangesAsync();
+
+                return Ok(cart);
+            }
+            catch (Exception er)
+            {
+                return BadRequest(er.Message);
+            }
         }
 
-        //private async Task<IActionResult> CreateCartDefinitionAsync(AppDbContext context, NewCartViewModel model)
-        //{
-        //    var carrinhoController = new CarrinhoController();
-        //    var criacaoCarrinho = await carrinhoController.PostAsync(context, model);
+        [HttpDelete(template: "Cart/{id}")]
+        public async Task<IActionResult> DeleteAsync([FromServices] AppDbContext context, [FromRoute] int id)
+        {
+            var cart = await context.Carrinhos.Include(nn => nn.CarrinhoItems).FirstOrDefaultAsync(item => item.Id == id);
+            if (cart == null)
+                return NotFound("Carrinho não encontrado!");
 
-        //    if (criacaoCarrinho != null && !(criacaoCarrinho is CreatedResult))
-        //        throw new Exception($"Erro ao criar carrinho! {criacaoCarrinho.ToString()}");
+            try
+            {
+                if (cart.CarrinhoItems?.Count > 0)
+                {
+                    var cartItemsController = new CartItemsController();
 
-        //    return criacaoCarrinho;
-        //}
+                    foreach (var item in cart.CarrinhoItems)
+                    {
+                        await cartItemsController.DeleteAsync(context, item.Id);
+                    }
+                }
 
-        //private async Task<Carrinho> GetCartAsync(AppDbContext context)
-        //{
-        //    var cartToken = string.Empty;
+                if (cart.Token == HttpContext.Request.Cookies[CookieTokenCart]?.ToString())
+                    HttpContext.Response.Cookies.Delete(CookieTokenCart);
 
-        //    if (HttpContext.Request.Cookies[CookieTokenCart] == null)
-        //    {
-        //        //Verifica se existe outra chamada a partir do client fazendo a criação do carrinho e token
-        //        var isAlreadyCreatedCart = (service.TrafficLock.ContainsKey(HttpContext.Session.Id));
+                context.Carrinhos.Remove(cart);
+                await context.SaveChangesAsync();
 
-        //        cartToken = isAlreadyCreatedCart ? service.TrafficLock[HttpContext.Session.Id] : Guid.NewGuid().ToString();
-        //        if (!isAlreadyCreatedCart)
-        //            service.TrafficLock.TryAdd(HttpContext.Session.Id, cartToken);
-
-        //        CreateCookieCart(cartToken);
-
-        //        if (!isAlreadyCreatedCart)
-        //            await CreateCartDefinitionAsync(context, new NewCartViewModel {  });
-        //    }
-        //    else
-        //        cartToken = HttpContext.Request.Cookies[CookieTokenCart].ToString();
-
-        //    return await context.Carrinhos.Include(itens => itens.CarrinhoItems).FirstOrDefaultAsync(nn => nn.Token == cartToken);
-        //}
+                return Ok();
+            }
+            catch (System.Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
         private void CreateCookieCart(string tokenCarrinho)
         {
@@ -242,5 +221,27 @@ namespace Server.Controllers
                 await activeCarts.ForEachAsync(cart => cart.Ativo = false);
             }
         }
+
+        private IEnumerable<ItemTotal> GenerateSubTotalData(IQueryable<CarrinhoItem> items, decimal cartDescount)
+        {
+            foreach (var item in items)
+            {
+                yield return new ItemTotal
+                {
+                    Produto = item.Produto,
+                    PrecoTotalItem = item.PrecoTotalItem,
+                    PrecoTotalItemDesconto = cartDescount <= 0 ? item.PrecoTotalItem : (item.PrecoTotalItem - ((item.PrecoTotalItem * cartDescount) / 100))
+                };
+            }
+        }
+
+        class ItemTotal
+        {
+            public Produto Produto { get; set; }
+            public decimal PrecoTotalItem { get; set; }
+            public decimal PrecoTotalItemDesconto { get; set; }
+        }
     }
+
+
 }

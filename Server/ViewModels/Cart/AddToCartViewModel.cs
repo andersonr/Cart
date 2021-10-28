@@ -1,5 +1,6 @@
 ﻿using Flunt.Notifications;
 using Flunt.Validations;
+using Server.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace Server.ViewModels.Cart
@@ -7,16 +8,17 @@ namespace Server.ViewModels.Cart
     public class AddToCartViewModel : Notifiable<Notification>
     {
         [Required]
-        public int ProdutoID { get; set; }
+        public Carrinho Carrinho { get; set; }
         [Required]
-        public long Qtdade { get; set; }
+        public Produto Produto { get; set; }
+        [Required]
+        public long Quantidade { get; set; }
 
-        public bool IsEntradasValidas()
+        public bool IsValidData()
         {
             AddNotifications(new Contract<Notification>()
                 .Requires()
-                .IsGreaterOrEqualsThan(Qtdade, 0, "Não é possível selecionar uma quantidade negativa")
-                .IsGreaterThan(ProdutoID, 0, "Produto não foi selecionado"));
+                .IsGreaterThan(Quantidade, 0, "Não é possível informar uma quantidade igual ou inferior a zero"));
 
             return IsValid;
         }

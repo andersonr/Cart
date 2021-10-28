@@ -18,9 +18,7 @@ namespace Server.ViewModels.Cart
             {
                 Usuario = Usuario,
                 Ativo = true,
-                Token = Guid.NewGuid().ToString(),
-                PrecoTotal = 0,
-                PrecoTotalDesconto = 0,
+                Token = Guid.NewGuid().ToString(),                
             };
         }
     }

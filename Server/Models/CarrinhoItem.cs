@@ -14,6 +14,11 @@ namespace Server.Models
         [Range(0, Int64.MaxValue, ErrorMessage = "Não é possível um valor negativo como quantidade!")]
         public long Quantidade { get; set; }
         [Required]
-        public decimal PrecoTotalItem { get; set; }
+        public decimal PrecoTotalItem { get; private set; }
+
+        internal void UpdatePrices()
+        {
+            PrecoTotalItem = Quantidade * Produto.PrecoUnitario;
+        }
     }
 }
