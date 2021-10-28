@@ -22,6 +22,8 @@ namespace Server
             services.AddDbContext<AppDbContext>();
             services.AddSingleton<ITrafficLock, TrafficControll>();
 
+            services.AddSwaggerGen();
+            
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
@@ -42,6 +44,9 @@ namespace Server
             app.UseRouting();
             app.UseCookiePolicy();
             app.UseSession();
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             app.UseEndpoints(endpoints =>
             {
