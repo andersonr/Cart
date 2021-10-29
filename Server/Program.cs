@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Server.Data;
+using Server.ExtensionMethods;
 
 namespace Server
 {
@@ -16,5 +18,7 @@ namespace Server
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
+
     }
 }

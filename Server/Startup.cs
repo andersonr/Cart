@@ -23,7 +23,8 @@ namespace Server
             services.AddSingleton<ITrafficLock, TrafficControll>();
 
             services.AddSwaggerGen();
-            
+
+
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
@@ -41,13 +42,16 @@ namespace Server
             else
                 app.UseExceptionHandler("/error");
 
+            var db = app.ApplicationServices.GetService<AppDbContext>();
+            db.Database.EnsureCreated();
+
             app.UseRouting();
             app.UseCookiePolicy();
             app.UseSession();
 
             app.UseSwagger();
             app.UseSwaggerUI();
-
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
