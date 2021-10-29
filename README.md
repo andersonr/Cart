@@ -2,16 +2,6 @@
 
 Criar uma api que possa ser utilizada na criação de um carrinho de compras de um e-commerce.
 
-### Pontos de atenção:
-    -> Performance
-    -> Carga
-    -> Tempo de resposta
-    -> Tratamentos de erros adequados
-    -> Persistencia de carrinhos(usuários logados ou não)  
-    -> Documentar como o projeto é iniciado, listando as soluções dos problemas
-    -> Montar uma imagem no docker e docker-compose com o ambiente de desenvolvimento
-    -> Projeto de testes e documentação de como rodar
-
 ### Funcionalidades
 - [x] Adicionar um item ao carrinho
 - [x] Remover um item do carrinho
@@ -26,17 +16,6 @@ Criar uma api que possa ser utilizada na criação de um carrinho de compras de 
     - [x] Salvar o carrinho construido, sem a necessidade de login, através de controle de cookies
 - [x] Retornar um JSON com todos os itens do carrinho
 
-
-### Melhorias
-1. Link para a página do produto daquele item
-2. Existem produtos que possuem customizações. Ex.: 
-    - Roupas é possível escolher a cor, tamanho
-    - Pizzas é possível escolher os sabores
-    - Eletronicos é possível escolher a voltagem 110V ou 220V
-    
-    Seria legal permitir essa customizações direto nos itens do carrinhos
-3. Desenvolver rotinas para armazenar uma lista de carrinhos "favoritos" do usuário
-
 ### TechStack
 - .net 5 
 - EntityFrameWork Core - ORM básico
@@ -44,21 +23,40 @@ Criar uma api que possa ser utilizada na criação de um carrinho de compras de 
 - Flunt - Auxiliar validação dos dados recebidos na api
 - Swagger - Para documentar api
 
+### Padroes
+    -> Base
+        - Seguido o padrão do EntityFrameWork Core(Pluralizar, ForeignKey)
+        - DataAnnotations para garantir a integridade dos dados do ORM
+        - Nomenclatura das entidades(tabelas) no idioma Português     
+    -> ViewModel api
+        - Mantido propriedades no idioma português, para ser padronizado com as nomenclaturas das entidades do BD
+        - Validações com Flunt para auxiliar na validação/integridade dos dados trafegados
+    -> Controller api
+        - OpenApi/WebAPI
+        - Um controller por entidade
+        - Rotas versionadas(v1)
+        - Idioma inglês
+        - Suporte processamento assincrono       
+
 ### Imagens do Docker
-Tentar entregar em apenas 1 imagem, para facilitar. 
-Então, se faz necessário, além do Docker, também a utilização do Docker Compose, aonde serão criados 2 containers do DocSite
+Adicionado arquivo Dockerfile para dar suporte ao desenvolvimento utilizando a imagem.
+Feito utilizando a ferramenta do próprio Visual Studio.
 
 ### Git
 Descrição dos commits segue o padrão 'Conventional Commits' para permitir a geração de um changelog automaticamente.
 
-### Falta fazer    
-    Testes unitários
-    Testes de performance e carga
-    Refatorar 
-        1. Idioma das váriaveis no código
-        2. Remover classes e comentários não usados
-    Melhorar essa documentação
-    Compartilhar com os perfis necessários. 
+### Testes
+    - Unitários: Não fiz, mas gostaria de ter feito os testes unitários com XUnit. Tive problemas para subir uma instância falsa do SQLite no momento da execução dos testes e acabei não fazendo os testes a tempo.  
+    - De consumo da API: Gostaria de ter utilizado o Jest para fazer testes na api mas acabei não fazendo a tempo.
 
-### Estrutura fisica das tabelas imaginadas
-![Tabelas](https://github.com/andersonr/Cart/blob/main/Diagrama%20visual.png)
+### Melhorias futuras
+1. Fazer testes unitários
+2. Fazer testes de consumo
+3. Existem produtos que possuem customizações. Ex.: 
+    - Roupas é possível escolher a cor, tamanho
+    - Pizzas é possível escolher os sabores
+    - Eletronicos é possível escolher a voltagem 110V ou 220V
+    
+    Seria legal permitir essa customizações direto nos itens do carrinhos
+4. Desenvolver rotinas para armazenar uma lista de carrinhos "favoritos" do usuário
+
