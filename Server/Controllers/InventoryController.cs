@@ -13,6 +13,8 @@ namespace Server.Controllers
     {
         [HttpGet]
         [Route(template: "Inventories")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> GetAsync([FromServices] AppDbContext context)
         {
             var inventories = await context.Estoques.AsNoTracking().Include(ss => ss.Produto).ToListAsync();
@@ -22,6 +24,8 @@ namespace Server.Controllers
 
         [HttpGet]
         [Route(template: "Inventories/{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> GetByIdAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
             var inventory = await context.Estoques.AsNoTracking().Include(ss => ss.Produto).FirstOrDefaultAsync(item => item.Id == id);
@@ -30,6 +34,8 @@ namespace Server.Controllers
         }
 
         [HttpPost(template: "Inventories")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Post))]
         public async Task<IActionResult> PostAsync([FromServices] AppDbContext context, [FromBody] NovoEstoqueViewModel model)
         {
             if (!ModelState.IsValid)
@@ -61,6 +67,8 @@ namespace Server.Controllers
         }
 
         [HttpPut(template: "Inventories/{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Put))]
         public async Task<IActionResult> PutAsync([FromServices] AppDbContext context, [FromBody] NovoEstoqueViewModel model, [FromRoute] int id)
         {
             if (!ModelState.IsValid)
@@ -102,6 +110,8 @@ namespace Server.Controllers
         }
 
         [HttpDelete(template: "Inventories/{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Delete))]
         public async Task<IActionResult> DeleteAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
             var inventoryItem = await context.Estoques.FindAsync(id);
@@ -123,6 +133,8 @@ namespace Server.Controllers
 
         //Usar apenas em dev, se necessário
         [HttpPost(template: "CreateInventoryItems")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Post))]
         public async Task<IActionResult> CreateInventoryItemsAsync([FromServices] AppDbContext context)
         {
             await context.Produtos.ForEachAsync(async produto =>

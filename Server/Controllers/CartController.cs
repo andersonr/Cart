@@ -26,6 +26,8 @@ namespace Server.Controllers
 
         [HttpGet]
         [Route(template: "Cart")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> GetAsync([FromServices] AppDbContext context)
         {
             var carts = await context.Carrinhos.AsNoTracking().ToListAsync();
@@ -34,6 +36,8 @@ namespace Server.Controllers
 
         [HttpGet]
         [Route(template: "CurrentCart")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> GetCurrentCartAsync([FromServices] AppDbContext context)
         {
             var cookieIdentifierValue = HttpContext.Request.Cookies[CookieTokenCart]?.ToString();
@@ -48,6 +52,8 @@ namespace Server.Controllers
 
         [HttpGet]
         [Route(template: "Cart/{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> GetByIdAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
             var cart = await context.Carrinhos.AsNoTrackingWithIdentityResolution()
@@ -63,6 +69,8 @@ namespace Server.Controllers
 
         [HttpGet]
         [Route(template: "CartTotals/{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> GetTotalsByIdAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
             var cart = await context.Carrinhos.Include(nn => nn.Cupom).Include(nn => nn.CarrinhoItems).FirstOrDefaultAsync(item => item.Id == id);
@@ -93,6 +101,8 @@ namespace Server.Controllers
         }
 
         [HttpPost(template: "Cart")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> CartAsync([FromServices] AppDbContext context, [FromBody] NovoCarrinhoViewModel model)
         {
             if (!ModelState.IsValid)
@@ -132,6 +142,8 @@ namespace Server.Controllers
         }
 
         [HttpPut(template: "Cart/{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Put))]
         public async Task<IActionResult> PutAsync([FromServices] AppDbContext context, [FromBody] AtualizaCarrinhoViewModel model, [FromRoute] int id)
         {
             if (!ModelState.IsValid || !model.IsValidEntryData())
@@ -161,6 +173,8 @@ namespace Server.Controllers
         }
 
         [HttpDelete(template: "Cart/{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Delete))]
         public async Task<IActionResult> DeleteAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
             var cart = await context.Carrinhos.Include(nn => nn.CarrinhoItems).FirstOrDefaultAsync(item => item.Id == id);

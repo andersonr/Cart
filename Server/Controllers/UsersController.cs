@@ -31,6 +31,8 @@ namespace Server.Controllers
 
         [HttpGet]
         [Route(template: "Users/{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> GetByIdAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
             var user = await context.Usuarios.AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
@@ -39,6 +41,8 @@ namespace Server.Controllers
         }
 
         [HttpPost(template: "Users")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Post))]
         public async Task<IActionResult> PostAsync([FromServices] AppDbContext context, [FromBody] NovoUsuarioViewModel model)
         {
             if (!ModelState.IsValid)
@@ -62,6 +66,8 @@ namespace Server.Controllers
         }
 
         [HttpPut(template: "Users/{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Put))]
         public async Task<IActionResult> PutAsync([FromServices] AppDbContext context, [FromBody] NovoUsuarioViewModel model, [FromRoute] int id)
         {
             if (!ModelState.IsValid)

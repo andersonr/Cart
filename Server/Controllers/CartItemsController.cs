@@ -15,6 +15,8 @@ namespace Server.Controllers
     {
         [HttpGet]
         [Route(template: "CartItems")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> GetAsync([FromServices] AppDbContext context)
         {
             var CartItems = await context.CarrinhoItems.AsNoTrackingWithIdentityResolution().Include(nn => nn.Produto).Include(nn => nn.Carrinho).ToListAsync();
@@ -23,6 +25,8 @@ namespace Server.Controllers
         }
 
         [HttpGet("CartItems/{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> GetByIdAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
             var CartItem = await context.CarrinhoItems.AsNoTrackingWithIdentityResolution().Include(nn => nn.Produto).Include(nn => nn.Carrinho).FirstOrDefaultAsync(item => item.Id == id);
@@ -33,6 +37,8 @@ namespace Server.Controllers
         }
 
         [HttpPost(template: "CartItems")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Post))]
         public async Task<IActionResult> AddItemToCartAsync([FromServices] AppDbContext context, [FromBody] NovoItemCarrinhoViewModel model)
         {
             if (!ModelState.IsValid || !model.IsValidData())
@@ -82,6 +88,8 @@ namespace Server.Controllers
         }
 
         [HttpPut(template: "CartItems/{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Put))]
         public async Task<IActionResult> PutAsync([FromServices] AppDbContext context, [FromBody] AtualizaCarrinhoItem model, [FromRoute] int id)
         {
             if (!ModelState.IsValid || !model.IsEntradasValidas())
@@ -112,6 +120,8 @@ namespace Server.Controllers
         }
 
         [HttpDelete(template: "CartItems/{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Delete))]
         public async Task<IActionResult> DeleteAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
             if (!ModelState.IsValid)

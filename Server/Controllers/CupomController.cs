@@ -14,6 +14,8 @@ namespace Server.Controllers
     {
         [HttpGet]
         [Route(template: "Cupons")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> GetAsync([FromServices] AppDbContext context)
         {
             var cupons = await context.Cupons.AsNoTracking().ToListAsync();
@@ -23,6 +25,8 @@ namespace Server.Controllers
 
         [HttpGet]
         [Route(template: "Cupons/{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> GetByIdAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
             var cupom = await context.Cupons.AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
@@ -31,6 +35,8 @@ namespace Server.Controllers
         }
 
         [HttpPost(template: "Cupons")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Post))]
         public async Task<IActionResult> PostAsync([FromServices] AppDbContext context, [FromBody] NovoCupomViewModel model)
         {
             if (!ModelState.IsValid && !model.IsValidData())
@@ -57,6 +63,8 @@ namespace Server.Controllers
         }
 
         [HttpPut(template: "Cupons/{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Put))]
         public async Task<IActionResult> PutAsync([FromServices] AppDbContext context, [FromBody] NovoCupomViewModel model, [FromRoute] int id)
         {
             if (!ModelState.IsValid)
@@ -86,6 +94,8 @@ namespace Server.Controllers
         }
 
         [HttpDelete(template: "Cupons/{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Delete))]
         public async Task<IActionResult> DeleteAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
             var cupom = await context.Cupons.FirstOrDefaultAsync(item => item.Id == id);

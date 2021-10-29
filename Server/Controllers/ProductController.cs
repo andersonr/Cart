@@ -12,6 +12,8 @@ namespace Server.Controllers
     {
         [HttpGet]
         [Route(template: "Products")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> GetAsync([FromServices] AppDbContext context)
         {
             var products = await context.Produtos.AsNoTracking().ToListAsync();
@@ -21,6 +23,8 @@ namespace Server.Controllers
 
         [HttpGet]
         [Route(template: "Products/{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> GetByIdAsync([FromServices] AppDbContext context, [FromRoute] int id)
         {
             var products = await context.Produtos.AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
@@ -29,6 +33,8 @@ namespace Server.Controllers
         }
 
         [HttpPost(template: "Products")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Post))]
         public async Task<IActionResult> PostAsync([FromServices] AppDbContext context, [FromBody] NovoProdutoViewModel model)
         {
             if (!ModelState.IsValid)
@@ -52,6 +58,8 @@ namespace Server.Controllers
         }
 
         [HttpPut(template: "Products/{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),
+                     nameof(DefaultApiConventions.Put))]
         public async Task<IActionResult> PutAsync([FromServices] AppDbContext context, [FromBody] NovoProdutoViewModel model, [FromRoute] int id)
         {
             if (!ModelState.IsValid)
